@@ -1,0 +1,21 @@
+{
+    "autoload": {
+        "psr-4": {
+            "camaleon\\examples\\": "core/examples/",
+            "camaleon\\helpers\\": "core/system/helpers/",
+            "camaleon\\viewControllers\\": "core/application/controllers/",
+            "camaleon\\errorControllers\\": "core/application/controllers/errors/",
+            "camaleon\\RouterControllers\\": "core/application/router/",
+            "camaleon\\apis\\": "core/application/apis/",
+            "camaleon\\models\\": "core/application/models/",
+            "camaleon\\mvc\\": "core/system/mvc/",
+            "camaleon\\system\\database\\": "core/system/database/"            
+        }
+    },
+    "require": {
+        "vlucas/phpdotenv": "^3.3",
+        "firephp/firephp-core": "^0.4.0",
+        "slim/slim": "^3.0",
+        "phpmailer/phpmailer": "^6.0"
+    }
+}
