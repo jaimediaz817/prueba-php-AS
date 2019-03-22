@@ -14,35 +14,10 @@
     </head>
 
     <body>
-        view content
-        <?php
-            //echo SINGLE_URL;
-        ?>
-        <p>
-            {# <strong>Hola <?php echo $this->test; ?></strong> #}
-        </p>
+        <h1>Joyeria XYZ</h1>
 
-        <?php if(empty($this->arrJoin)) :?>
-            <div>Array vacio</div>
-        <?php else: ?>
-            <?php foreach($this->arrJoin as $val) :?>
-                <div><?= $val->usua_nombres ?></div>
-            <?php endforeach; ?>
-        <?php endif; ?>
-
-                        
-        <h4>Perfiles disponibles</h4>
-        <select class="select">
-            <?php while($usuario = $this->res->fetch_object()): ?>
-                <option value="<?php echo $usuario->perf_id_pk; ?>"><?php echo $usuario->perf_nombres; ?></option>            
-            <?php endwhile; ?>
-        </select>
-
-
-        <?php echo SINGLE_URL ?> <- ES LA PATH
-        <?php echo SINGLE_URL_OLD ?> <- ES LA PATH
-        <?php echo ENVIROMENT_NAME ?> <- ENVIROMENT
-        
+        Redirect action...
+        <span><?php echo $this->test; ?> </span>
 
         <!-- Scripts -->
         <script src="<?php echo ASSET_URL ?>js/libraries/jquery-plugins/jquery-3.2.1.js"></script>

@@ -30,7 +30,7 @@ class StringSecurityManager{
     
     public static function encriptarCadenaTexto ($cadenaEntrante) {   
         // Una clave de codificacion, debe usarse la misma para encriptar y desencriptar
-        $key = PUBLIC_KEY_SECURYTY_ENCY_DESCY_STRING;  
+        $key = "PUBLIC_KEY_SECURYTY_ENCY_DESCY_STRING";  
         $encrypted = base64_encode(
                 mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($key), $cadenaEntrante, 
                         MCRYPT_MODE_CBC, md5(md5($key))));
@@ -39,12 +39,22 @@ class StringSecurityManager{
      
     public static function desencriptarCadenaTexto ($cadenaEntrante) {
         // Una clave de codificacion, debe usarse la misma para encriptar y desencriptar
-        $key = PUBLIC_KEY_SECURYTY_ENCY_DESCY_STRING;  
+        $key = "PUBLIC_KEY_SECURYTY_ENCY_DESCY_STRING";  
         $decrypted = rtrim(mcrypt_decrypt(
                 MCRYPT_RIJNDAEL_256, md5($key), base64_decode($cadenaEntrante), 
                 MCRYPT_MODE_CBC, md5(md5($key))), "\0");
         return $decrypted;  //Devuelve el string desencriptado        
     }
 
+    public static function encrypt($key){
+        $key = md5($key);
+        return $key;
+    }    
+
+    public static function desencrypt($cadena){
+        $key='';  // Unique Key
+        $decrypted = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key), base64_decode($cadena), MCRYPT_MODE_CBC, md5(md5($key))), "\0");
+       return $decrypted;  //Devuelve el string desencriptado
+    }
     // TODO: encriptar con MD5,SHA1 -> 2019
 }

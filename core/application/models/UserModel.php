@@ -4,18 +4,14 @@ namespace camaleon\models;
 use camaleon\system\database\CrudBase;
 
 class UserModel extends CrudBase {
-    private $id;
+
     private $name;
-    private $lastName;
-    private $date;
-    private $username;
+    private $nickname;
     private $password;
-    private $createdAt;
+    private $status;
 
-    const TABLE="usuario";
+    const TABLE="users";
     const ID="usua_id_pk";
-
-    private $pdo;
 
     public function __construct() {
         parent::__construct(self::TABLE, self::ID);
@@ -30,32 +26,59 @@ class UserModel extends CrudBase {
         return $this->name;
     }
 
-    // custom
-    public function innerJoin() {
-        $perfName = "parlos";
-        $query = "
-                    SELECT us.usua_nombres, us.usua_apellidos, up.usua_perf_code
-                    FROM usuario us INNER JOIN usua_perf up ON us.usua_id_pk = up.usua_id_fk
-                    INNER JOIN perfil pe ON pe.perf_id_pk = up.perf_id_fk 
-                    WHERE pe.perf_nombres = :perf_param
-        ";
-        $query2 = "SELECT * FROM usuario";
-        $consulta = $this->pdo->prepare($query);
-        $consulta->execute(array(':perf_param' => $perfName));
+    /**
+     * Select a user
+     */
+    public function selectAllUsers() {
+        $query = "SELECT * from users";
+
+        $queryPdo = $this->pdo->prepare($query);
+        $queryPdo->execute();
+
         //PDO::FETCH_ASSOC
-        $res = $consulta->fetchAll(\PDO::FETCH_OBJ);
+        $response = $queryPdo->fetchAll(\PDO::FETCH_OBJ);
+        return $response;
+    }
+
+    public function selectUserLogin($user='', $pass='') {
+        $response;
+
+        if ($user!= '' && $pass!='') {
+            $query = "
+                        SELECT * FROM users us WHERE us.usua_nickname = :nickname
+                        AND us.usua_password = :password
+            ";
+            $return = $this->pdo->prepare($query);
+            $return->execute(array(':nickname' => $user, ':password'=> $pass));
+            //PDO::FETCH_ASSOC
+            $response = $return->fetchAll(\PDO::FETCH_ASSOC);
+            return $response;
+        }
+    }
+
+    public function activeAccount($user='', $pass='') {
+        $response;
+
+        if ($user!= '' && $pass!='') {
+            $query = "
+                        SELECT * FROM users us WHERE us.usua_nickname = :nickname
+                        AND us.usua_password = :password
+            ";
+            $return = $this->pdo->prepare($query);
+            $return->execute(array(':nickname' => $user, ':password'=> $pass));
+            //PDO::FETCH_ASSOC
+            $response = $return->fetchAll(\PDO::FETCH_ASSOC);
+            return $response;
+        }
+    }    
+
+    public function activateAccountEmail($idEntity=null) {
+        $stm = $this->pdo->prepare("UPDATE " .self::TABLE. " SET usua_status_account='1' WHERE usua_id_pk = ?");
+        $res = $stm->execute(array($idEntity));
         return $res;
     }
 
     // override
-    public function create() {
-        $stm = $this->pdo->prepare("INSERT INTO " .self::TABLE. " (usua_nombres, usua_apellidos, usua_fecha_creacion, usua_username, usua_password, created_at) values(?,?,?,?,?,?)");
-        $stm->execute(array($this->name, $this->lastName, $this->date, $this->username, $this->password, $this->createdAt));
-    }
-    public function update($idEntity=null) {
-        $stm = $this->pdo->prepare("UPDATE " .self::TABLE. " SET usua_nombres=?, usua_apellidos=?, usua_fecha_creacion=?, usua_username=?, usua_password=?, created_at=? WHERE usua_id_pk=?");
-        $stm->execute(array($this->name, $this->lastName, $this->date, $this->username, $this->password, $this->createdAt,$idEntity));
-    }
+    public function create() {}   
+    public function update($idEntity=null) {} 
 }
-
-?>
