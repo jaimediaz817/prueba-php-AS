@@ -32,7 +32,7 @@ class InventoryModel extends CrudBase {
      */
     public function selectAllMovementsByProduct($idProduct) {
         $query = "
-                    SELECT mov.movi_cantidad, mov.movi_tipo, mov.movi_fecha_modificacion, pro.prod_nombre, pro.prod_id_pk
+                    SELECT mov.movi_cantidad, mov.movi_tipo, mov.movi_fecha_modificacion, pro.prod_nombre, pro.prod_id_pk, pro.prod_precio
                     FROM ". self::TABLE. " mov INNER JOIN products pro 
                     ON pro.prod_id_pk = mov.prod_id_fk
                     WHERE prod_id_fk =?";

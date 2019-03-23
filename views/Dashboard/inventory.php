@@ -116,6 +116,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Product Name</th>
                                                     <th scope="col">Total Products</th>
+                                                    <th scope="col">Price</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -123,6 +124,7 @@
                                                     <th scope="row"></th>
                                                     <td><?= $this->nameProd ?></td>
                                                     <td class="text-center"><?= $this->currentProdInventory ?></td>
+                                                    <td class="text-center"><span class="badge badge-success"><?= $this->priceProd ?> COP</span><span><strong>$</strong></span></SPAN></td>
                                                 </tr>
                                             </tbody>
                                         </table>

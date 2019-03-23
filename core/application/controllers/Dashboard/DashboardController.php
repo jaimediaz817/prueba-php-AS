@@ -121,10 +121,67 @@ class DashboardController extends ControllerBase {
 
         $categoriesList = $category->selectAllCategories();
         $products = $product->selectAllProducts();
-        
+
+        header('Access-Control-Allow-Origin: http://localhost/joyeria-xyz/Dashboard/product');
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+
         $this->view->categoriesList = $categoriesList;
         $this->view->products = $products;
         $this->view->renderView($this, "product", "Home | Product");
+    }
+
+    // Resize Image
+    public function redimImage($originPath, $pathDest, $maxWidth, $maxHeight, $format, $prefixName) {
+
+        //Ruta de la original
+        $rtOriginal= $pathDest.$originPath;
+            
+        // Format validate
+        if($format == "jpg") {
+            $original = imagecreatefromjpeg($rtOriginal);
+        } else if ($format == "png") {
+            $original = imagecreatefrompng($rtOriginal);
+        }
+                    
+        $max_ancho = $maxWidth; //150;
+        $max_alto = $maxHeight; //150;
+        
+        list($ancho,$alto)=getimagesize($rtOriginal);
+        
+        // Calculate width + height
+        $x_ratio = $max_ancho / $ancho;
+        $y_ratio = $max_alto / $alto;
+
+        if( ($ancho <= $max_ancho) && ($alto <= $max_alto) ){
+            $finalWidth = $ancho;
+            $finalHeight = $alto;
+        }
+
+        elseif (($x_ratio * $alto) < $max_alto){
+            $finalHeight = ceil($x_ratio * $alto);
+            $finalWidth = $max_ancho;
+        }
+        else{
+            $finalWidth = ceil($y_ratio * $ancho);
+            $finalHeight = $max_alto;
+        }
+
+        $lienzo=imagecreatetruecolor($finalWidth,$finalHeight); 
+        imagecopyresampled($lienzo,$original,0,0,0,0,$finalWidth, $finalHeight,$ancho,$alto);
+        
+        //Limpiar memoria
+        imagedestroy($original);
+        
+        if ($format == "jpg") {
+            // Definition
+            $cal=90;
+            imagejpeg($lienzo, $pathDest.$prefixName.$originPath, $cal);
+        } else if ($format == "png") {
+            // Definition
+            $cal=9;
+            imagepng($lienzo, $pathDest.$prefixName.$originPath, $cal);
+        }
     }
 
     // Add
@@ -140,12 +197,28 @@ class DashboardController extends ControllerBase {
 
         // formats Img
         if ($mimeType == "image/jpg" || $mimeType == "image/jpeg" || $mimeType == "image/png" || $mimeType == "image/gif") {
+            $formatImg = '';
+            $pathDest = 'assets/uploads/images/';
+
+            if($mimeType == "image/jpg" || $mimeType == "image/jpeg") {
+                $formatImg = "jpg";
+            } else if($mimeType == "image/png" ) {
+                $formatImg = "png";
+            }
+
             // Copy Image to folder
             if (!is_dir('assets/uploads/images')) {
                 mkdir('assets/uploads/images', 0777, true);
             }
+
+            // upload origin image
             $moveImageStatus = move_uploaded_file($file['tmp_name'], 'assets/uploads/images/'.$fileName);
 
+            // resize image
+            $this->redimImage($fileName, $pathDest, 400, 400, $formatImg, "copy1_");
+            $this->redimImage($fileName, $pathDest, 100, 100, $formatImg, "copy2_");
+
+            // Product instance
             $product = new ProductModel();
             $inventory = new InventoryModel();
 
@@ -277,6 +350,8 @@ class DashboardController extends ControllerBase {
         $arr = array();
         $cont=0;
         $nameGeneralProd = "";
+        $priceProd = 0;
+
         foreach($ex as $index => $va) {
             $cont++;
             //echo "<br>recorrido<br>". $index . $va;
@@ -292,6 +367,7 @@ class DashboardController extends ControllerBase {
 
         if(!empty($res)) {
             $nameGeneralProd = $res[0]->prod_nombre;
+            $priceProd = $res[0]->prod_precio;
             //$this->calculateIventory($res);
             $sumAdd = $inventory->selectMovAddProduct($idProductParam, 'add');
             $sumRemove = $inventory->selectMovAddProduct($idProductParam, 'remove');
@@ -314,6 +390,7 @@ class DashboardController extends ControllerBase {
         // Render view
         $this->view->nameProd = $nameGeneralProd;
         $this->view->currentProdInventory = ($totalsAdd - $totalsRemove);
+        $this->view->priceProd = $priceProd;
         $this->view->list = $res;
         $this->view->renderView($this, "inventory", "Inventory | Product");
     }

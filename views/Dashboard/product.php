@@ -189,6 +189,7 @@
 
         <!-- CUSTOM -->
         <input id="urlSelector" type="hidden" name="url" value="<?php echo SINGLE_URL; ?>">
+                
 
         <!-- Scripts -->
         <script src="<?php echo ASSET_URL ?>js/libraries/jquery-plugins/jquery-3.2.1.js"></script>

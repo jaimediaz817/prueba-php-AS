@@ -50,6 +50,9 @@
             formData.append('priceProd', priceProd);
             formData.append('quantityProd', quantityProd);
 
+
+
+
             let promiseProduct = $.ajax({
                 url: URL_SINGLE + 'Dashboard/addProductRequest',
                 type: 'POST',
@@ -79,6 +82,9 @@
                 console.log("flujo #1")    
             });
 
+
+
+
             console.log("flujo #2")
         } else {
             return false;
@@ -88,25 +94,87 @@
 
     function convertCurrency(value) {
 
-        var endpoint = 'convert';
-        var access_key = '89dd481d423f920afcb058422d4e4f72';
+        var endpoint = 'quotes';
+        var access_key = '1869|oZZ9c79DK_rn1ND8UFHcr6TFTrbnzRyj';
         
         // define from currency, to currency, and amount
-        var fromVar = 'EUR';
-        var to = 'GBP';
+        var fromVar = 'COP';
+        var to = 'USD';
         var amount = '10';
+
+        var url = 'https://api.cambio.today/v1/'+ endpoint +'/'+ fromVar +'/'+ to +'/json?quantity='+ value +'&key=' + access_key;
+        var response='';
+
         
-        // execute the conversion using the "convert" endpoint:
-        var promiseCurrency = $.ajax({
-            url: 'http://apilayer.net/api/' + endpoint + '?access_key=' + access_key +'&from=' + fromVar + '&to=' + to + '&amount=' + amount,   
+
+          $.ajax({
+            headers: {
+                'Access-Control-Allow-Credentials' : true,
+                'Access-Control-Allow-Origin':'http://localhost/joyeria-xyz/Dashboard/product',
+                'Access-Control-Allow-Methods':'GET',
+                'Access-Control-Allow-Headers':'application/json',
+            }, 
+            type: 'GET',
             dataType: 'jsonp',
-            success: function(json) {
-        
-                // access the conversion result in json.result
-                alert(json.result);
-                        
+            url: 'https://api.cambio.today/v1/quotes/COP/USD/json?quantity=40000&key=1869|oZZ9c79DK_rn1ND8UFHcr6TFTrbnzRyj',
+            crossDomain: true,
+            beforeSend: function(xhr){
+                xhr.withCredentials = true;
+          },
+            success: function(data, textStatus, request){
+                console.log(data);
             }
-        });
+            });
+
+
+
+        // $.ajax({
+        //     url: 'https://api.cambio.today/v1/quotes/COP/USD/json?quantity=40000&key=1869|oZZ9c79DK_rn1ND8UFHcr6TFTrbnzRyj',
+        //     crossDomain: true,
+        //     method: 'GET',            
+        //     dataType: 'jsonp',
+        //     contentType: 'application/json',
+        //     crossOrigin: false,
+        //     success: function(data){
+        //       console.log('succes: '+data);
+        //     }
+        //   });
+          //header("Access-Control-Allow-Origin: *")
+        // $.ajax({
+        //     type: 'GET',
+        //     crossDomain: true,
+        //     dataType: 'jsonp',
+        //     contentType: 'application/json',
+        //     headers: {
+        //         'Access-Control-Allow-Credentials' : true,
+        //         'Access-Control-Allow-Origin':'http://localhost/joyeria-xyz/Dashboard/product',
+        //         'Access-Control-Allow-Methods':'GET',
+        //         'Access-Control-Allow-Headers':'application/json',
+        //     },            
+        //     url: 'https://api.cambio.today/v1/quotes/COP/USD/json?quantity=40000&key=1869|oZZ9c79DK_rn1ND8UFHcr6TFTrbnzRyj',
+        //     success: function(jsondata){
+        //         console.log(jsondata);
+        //         var c = "test";
+        //         var j = 817;
+        //         response = jsondata
+        //     }
+        //  })
+        return response;
+
+        // execute the conversion using the "convert" endpoint:
+        // var promiseCurrency = $.ajax({
+        //     url: 'http://apilayer.net/api/' + endpoint + '?access_key=' + access_key +'&from=' + fromVar + '&to=' + to + '&amount=' + amount,   
+        //     dataType: 'json',
+        //     success: function(json) {
+        //         // access the conversion result in json.result
+        //         alert(json.result);
+        //     }
+        // });
+
+        // promiseCurrency.done(function(){
+        //     console.log("promise current");
+        //     console.log("result: ");
+        // })
     }
 
 
@@ -159,7 +227,7 @@
                         enabledSaveProduct();
                         disabledEditProduct();
 
-                        alert("Deleted Category!");
+                        alert("Deleted Product!");
                         showAlert($(".alert alert-success"), true);
                     }
                 },

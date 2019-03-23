@@ -76,6 +76,7 @@
                                                             <th scope="col">Name</th>
                                                             <th scope="col">Category</th>
                                                             <th scope="col">Photo</th>
+                                                            <th scope="col">Price</th>
                                                             <th scope="col" class="text-center">Quantity General</th>
                                                             <th></th>
                                                         </tr>
@@ -90,7 +91,8 @@
                                                                         <span class="avatar-product">
                                                                             <img class="rounded" src="<?= ASSET_URL."uploads/images/".$prod->prod_imagen; ?>" alt="" srcset="">
                                                                         </span>                                                                    
-                                                                        </td>
+                                                                    </td>
+                                                                    <td><small><span class="badge badge-success"><?= $prod->prod_precio; ?> <strong> $</strong></span></small></td>
                                                                     <td class="text-center">
                                                                         <span class="badge badge-primary"><?= $this->arrTmp[$prod->prod_id_pk] ?></span>
                                                                     </td>
