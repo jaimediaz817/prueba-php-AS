@@ -21,9 +21,10 @@ class DashboardController extends ControllerBase {
 
     // Category default
     public function index($params=null) {
-
         $category = new CategoryModel();
         $categoriesList = $category->selectAllCategories();
+
+        //header("Location: ". SINGLE_URL . "Dashboard/index");
 
         $this->view->categoriesList = $categoriesList;
         $this->view->renderView($this, "index", "Home | Dashboard - Category");
@@ -425,4 +426,16 @@ class DashboardController extends ControllerBase {
         }    
         return $totalReturnDiff;
     }
+
+
+    public function searchProduct($params=null) {
+
+        //getById
+        $prod = new ProductModel();
+        $res = $prod->selectAllProducts();
+
+        $this->view->listProd = $res;
+        $this->view->renderView($this, "searchProduct", "Search Product | Dashboard - Category");
+    }
+
 }

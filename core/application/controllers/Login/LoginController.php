@@ -34,6 +34,7 @@ class LoginController extends ControllerBase {
         $password = '';
         $statusAccount = null;
         $successLogin = false;
+        $userId = '';
 
         if ($_POST) {
             $nickname = $_POST['login'];
@@ -44,7 +45,14 @@ class LoginController extends ControllerBase {
 
             if(!empty($loginData)) {
                 $statusAccount =  $loginData[0]["usua_status_account"];
-                SessionApp::setValueSession("idUser", $loginData[0]["usua_id_pk"]);
+
+                // S E S S I O N
+                SessionApp::initStartFullSessionVar("idUser", $loginData[0]["usua_id_pk"]);
+                SessionApp::initStartFullSessionVar("nickUser", $loginData[0]["usua_nickname"]);
+
+                $userId = $loginData[0]["usua_id_pk"];
+            } else {
+                $userId = 0;
             }
 
             if ($loginData[0]["usua_status_account"] == 0) {
@@ -53,7 +61,7 @@ class LoginController extends ControllerBase {
                 $statusAccount = "success";
             }
         }
-        echo(json_encode(array("res"=> $statusAccount, "nick"=>$loginData, "userId"=> $loginData[0]["usua_id_pk"] )));
+        echo(json_encode(array("res"=> $statusAccount, "nick"=>$loginData, "userId"=> $userId )));
     }
 
     /**
@@ -91,17 +99,31 @@ class LoginController extends ControllerBase {
             ";
 
             $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-            $res = 1;
+            
             $mail->send();
+            $res = 1;
 
-            echo json_encode(array("res"=> "success", "send"=>$res));
+            //echo json_encode(array("res"=> "success", "send"=>$res));
             //echo 'Message has been sent';
         } catch (Exception $e) {
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             $res = 0;
         } finally {
-            
-        }                
+            echo json_encode(array("res"=> "success", "send"=>$res));
+        }
+
+        if ($res == 1) {
+            $resultMail = array(
+                "res" => "success",
+                "send" => true
+            );
+        } else {
+            $resultMail = array(
+                "res" => "fail",
+                "send" => false
+            );
+        }
+        echo json_encode($resultMail);
     }
 
     public function activateAccount($params=null) {
@@ -127,7 +149,11 @@ class LoginController extends ControllerBase {
      */
     public function signOut($params=null) {
         // clear SESSION superglobal
+
+        // S E S S I O N
         SessionApp::unsetVarSession("idUser");
+        SessionApp::unsetVarSession("nickUser");
+        SessionApp::destroyAllSession();
         // Redirect
         header("Location: ". SINGLE_URL . "Login/login");
     }

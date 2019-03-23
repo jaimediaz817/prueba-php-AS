@@ -26,7 +26,8 @@ class IndexController extends ControllerBase{
         $user = new UserModel();
         $responseUsers = $user->selectAllUsers();
 
-        $this->view->test = $test;
-        $this->view->renderView($this, "index", "main");
+        header("Location: ". SINGLE_URL . "Dashboard/index");
+        // $this->view->test = $test;
+        // $this->view->renderView($this, "index", "main");
     }
 }

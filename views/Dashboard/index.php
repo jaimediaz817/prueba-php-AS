@@ -42,7 +42,7 @@
                             <a href="<?php echo SINGLE_URL; ?>Dashboard/product">Products</a>
                         </li>
                         <li>
-                            <a href="inventory">Inventory</a>
+                            <a href="<?php echo SINGLE_URL; ?>Dashboard/searchProduct">Inventory</a>
                         </li>
                         <li>
                             <a href="<?php echo SINGLE_URL; ?>Dashboard/showProducts">Show Products</a>

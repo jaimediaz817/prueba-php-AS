@@ -20,6 +20,7 @@
             <header>            
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <a class="navbar-brand" href="#">Dashboard Joyería</a>
+                    <a href="<?php echo SINGLE_URL; ?>Login/signOut" class="btn btn-secondary btn-lg active float-right" role="button" aria-pressed="true">Sign Out</a>
                 </nav>                
             </header>
 
@@ -40,7 +41,7 @@
                             <a href="<?php echo SINGLE_URL; ?>/Dashboard/product">Products</a>
                         </li>
                         <li>
-                            <a href="<?php echo SINGLE_URL; ?>Dashboard/inventory">Inventory</a>
+                            <a href="<?php echo SINGLE_URL; ?>Dashboard/searchProduct">Inventory</a>
                         </li>
                         <li>
                             <a href="showProducts" class="active">Show Products</a>

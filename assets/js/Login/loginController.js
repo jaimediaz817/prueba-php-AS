@@ -107,7 +107,11 @@
                     alert("A link was sent to the email you wrote in the text field, please review it and activate your access account right now.");
                 },
                 error: function(err) {
-                    console.log("err : "+ err);
+                    console.log("err : ", err);
+                    if (err.status == 200 && err.statusText =="OK") {
+                        $(".group-email-validation").addClass("d-none");
+                        alert("A link was sent to the email you wrote in the text field, please review it and activate your access account right now.");
+                    }
                 }
             }); 
         } else {

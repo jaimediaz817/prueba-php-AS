@@ -18,7 +18,15 @@ class ViewBase {
             if ($title != '') {
                 $this->title = $title;
             }
-            include $path . ".php";
+
+            // Session validate
+            session_start();
+            if (!isset($_SESSION['nickUser'])) {
+                include "./views/Login/login.php";
+            } else {
+                include $path . ".php";
+            }
+            
         } else if (file_exists($path . ".html")) {
             if ($title !== '') {
                 $this->title = $title;

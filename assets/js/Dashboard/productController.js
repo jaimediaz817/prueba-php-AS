@@ -41,6 +41,9 @@
             let priceProd    = $("#productPrice").val();
             let quantityProd = $("#quantity").val();
 
+            // Request
+            //var res = convertCurrency(priceProd);
+
             var formData = new FormData($("#formProduct")[0]);
             formData.append('nameProd', nameProd);
             formData.append('categoryProd', categoryProd);
@@ -62,16 +65,49 @@
                         // refresh
                         location.reload();
                     }
+
+                    if (response.res == "fail" && response.uploadStatus == 0) {
+                        alert("You must add a photo with a valid image format, usually .ico formats are not accepted for you to take it into account");
+                    }
                 },
                 error: function(err) {
                     console.log("err : "+ err);
                 }
             });
 
+            promiseProduct.done(function() {
+                console.log("flujo #1")    
+            });
+
+            console.log("flujo #2")
         } else {
             return false;
         }      
     });
+
+
+    function convertCurrency(value) {
+
+        var endpoint = 'convert';
+        var access_key = '89dd481d423f920afcb058422d4e4f72';
+        
+        // define from currency, to currency, and amount
+        var fromVar = 'EUR';
+        var to = 'GBP';
+        var amount = '10';
+        
+        // execute the conversion using the "convert" endpoint:
+        var promiseCurrency = $.ajax({
+            url: 'http://apilayer.net/api/' + endpoint + '?access_key=' + access_key +'&from=' + fromVar + '&to=' + to + '&amount=' + amount,   
+            dataType: 'jsonp',
+            success: function(json) {
+        
+                // access the conversion result in json.result
+                alert(json.result);
+                        
+            }
+        });
+    }
 
 
     // Eclit Edit | link table
@@ -179,6 +215,17 @@
         }
     });
 
+
+
+
+    // Search inventory
+    $("#showInventory").on("click", function(e){
+        e.preventDefault();
+        if ($("#products").val() !== "") {
+            var id = $("#products").val();
+            window.location.href = URL_SINGLE + "Dashboard/inventory/" + id
+        }
+    });
 
 
 
