@@ -22,6 +22,13 @@
         $("#editProduct").removeClass('disabled'); // Disables visually
         $("#editProduct").prop('disabled', false); // Disables visually + functionally
     }
+
+
+        // UI controls
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
     //-------------------------------------------------------------------------------------------
 
     enabledSaveProduct();
@@ -41,8 +48,9 @@
             let priceProd    = $("#productPrice").val();
             let quantityProd = $("#quantity").val();
 
-            // Request
+            // TODO: comment - Request API CURRENCY
             //var res = convertCurrency(priceProd);
+            // todo: comment end
 
             var formData = new FormData($("#formProduct")[0]);
             formData.append('nameProd', nameProd);
@@ -50,9 +58,7 @@
             formData.append('priceProd', priceProd);
             formData.append('quantityProd', quantityProd);
 
-
-
-
+            // Request 
             let promiseProduct = $.ajax({
                 url: URL_SINGLE + 'Dashboard/addProductRequest',
                 type: 'POST',
@@ -93,6 +99,7 @@
 
 
     function convertCurrency(value) {
+        //const axios = require('../../js/libraries/axios');
 
         var endpoint = 'quotes';
         var access_key = '1869|oZZ9c79DK_rn1ND8UFHcr6TFTrbnzRyj';
@@ -105,26 +112,42 @@
         var url = 'https://api.cambio.today/v1/'+ endpoint +'/'+ fromVar +'/'+ to +'/json?quantity='+ value +'&key=' + access_key;
         var response='';
 
-        
+        // axios({
+        //     method:'get',
+        //     url:'https://api.cambio.today/v1/'+ endpoint +'/'+ fromVar +'/'+ to +'/json?quantity='+ value +'&key=' + access_key,
+        //     responseType:'json'
+        // })
+        // .then(function (response) {
+        //     console.log(response);
+        // });
 
-          $.ajax({
+        var x = 0;
+        var y = 0;
+        //dataType: 'jsonp',
+        $.ajax({
             headers: {
                 'Access-Control-Allow-Credentials' : true,
-                'Access-Control-Allow-Origin':'http://localhost/joyeria-xyz/Dashboard/product',
+                'Content-Type':'application/json',
+                'Access-Control-Allow-Origin':'http://localhost/joyeria-xyz/',
                 'Access-Control-Allow-Methods':'GET',
-                'Access-Control-Allow-Headers':'application/json',
+                'Access-Control-Allow-Headers':'*',
             }, 
             type: 'GET',
+            contentType: 'application/json',
             dataType: 'jsonp',
+            responseType: 'application/json',
             url: 'https://api.cambio.today/v1/quotes/COP/USD/json?quantity=40000&key=1869|oZZ9c79DK_rn1ND8UFHcr6TFTrbnzRyj',
             crossDomain: true,
             beforeSend: function(xhr){
                 xhr.withCredentials = true;
           },
-            success: function(data, textStatus, request){
+           success: function(data, textStatus, request){
                 console.log(data);
-            }
-            });
+           },
+           error: function(err) {
+               console.log("err:: ", err);
+           }
+        });
 
 
 
@@ -312,7 +335,35 @@
         }
     }
 
+    // Generate Report - action  ***********************************************************
+    // 
+    $("#generateReport").on("click", function(){
+        console.log("click");
+
+        let promiseReport = $.ajax({
+            url: URL_SINGLE + 'Dashboard/generateReportRequest',
+            type: 'POST',
+            data:  {"report": "true"},
+            dataType: 'json',
+            contentType: false,
+            processData: false,            
+            success: function(response){
+                console.log("response: ", response);
+                if (response.res == "success") {
+                    //alert("controller ok" + response.htmlRender);
+                    $("#tableRender").append(response.htmlRender);
+                    $("#htmlId").val(response.pdfRender)
+                }
+            },
+            error: function(err) {
+                console.log("error : ", err);
+            }
+        });   
+
+    });
+
     function reloadCurrentPage() {
         location.reload();
     }
+
 })(jQuery);

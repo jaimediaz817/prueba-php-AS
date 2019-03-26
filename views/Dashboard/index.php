@@ -48,7 +48,7 @@
                             <a href="<?php echo SINGLE_URL; ?>Dashboard/showProducts">Show Products</a>
                         </li>
                         <li>
-                            <a href="#">Reports</a>
+                            <a href="<?php echo SINGLE_URL; ?>Dashboard/reports">Reports</a>
                         </li>
                         <li>
                             <a href="<?php echo SINGLE_URL; ?>Login/signOut">Exit</a>

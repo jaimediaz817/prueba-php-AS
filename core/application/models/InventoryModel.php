@@ -69,6 +69,13 @@ class InventoryModel extends CrudBase {
         // date('Y-m-d')
     }
 
+
+    public function addProductGeneraInventory() {
+        
+    }
+
+
+    //---------------------------------------------------------------------------------------------------------------
     public function create() {
         
     }

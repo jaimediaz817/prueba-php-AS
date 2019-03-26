@@ -24,7 +24,11 @@ class ViewBase {
             if (!isset($_SESSION['nickUser'])) {
                 include "./views/Login/login.php";
             } else {
-                include $path . ".php";
+                if ($controlador !== "Login" && $view !== "login") {
+                    include $path . ".php";
+                } else if ($controlador == "Login" && $view == "login") {
+                    header("Location: ". SINGLE_URL . "Dashboard/index");
+                }
             }
             
         } else if (file_exists($path . ".html")) {

@@ -7,6 +7,12 @@ use camaleon\mvc\ControllerBase;
 use camaleon\models\CategoryModel;
 use camaleon\models\ProductModel;
 use camaleon\models\InventoryModel;
+use camaleon\models\InventoryGeneralModel;
+
+// PDF
+use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
 //   S E S S I O N
 use camaleon\helpers\SessionApp;
@@ -122,8 +128,9 @@ class DashboardController extends ControllerBase {
         $categoriesList = $category->selectAllCategories();
         $products = $product->selectAllProducts();
 
-        header('Access-Control-Allow-Origin: http://localhost/joyeria-xyz/Dashboard/product');
-        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+        header('Access-Control-Allow-Origin: *');
+        //header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+        header('Access-Control-Allow-Headers: *');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 
         $this->view->categoriesList = $categoriesList;
@@ -200,7 +207,7 @@ class DashboardController extends ControllerBase {
             $formatImg = '';
             $pathDest = 'assets/uploads/images/';
 
-            if($mimeType == "image/jpg" || $mimeType == "image/jpeg") {
+            if ($mimeType == "image/jpg" || $mimeType == "image/jpeg") {
                 $formatImg = "jpg";
             } else if($mimeType == "image/png" ) {
                 $formatImg = "png";
@@ -241,11 +248,19 @@ class DashboardController extends ControllerBase {
                 $textAction = "success";
                 $lastId = $product->getLastId();
                 $idTmp = $lastId[0];
+
                 // Inventory
                 $inventory->idProduct = $idTmp;
                 $inventory->type = 'add';
                 $inventory->quantity = $countProductInitial;
                 $res = $inventory->generateMovement();
+
+                // General Iventory
+                $iventoryGeneral = new InventoryGeneralModel();
+                $iventoryGeneral->prodId = $idTmp;
+                $iventoryGeneral->prodName = $_POST['nameProd'];
+                $iventoryGeneral->total = $countProductInitial;
+                $res = $iventoryGeneral->addProductGeneraInventory();
 
             } else {
                 $textAction = "failAdd";
@@ -448,6 +463,17 @@ class DashboardController extends ControllerBase {
                 if ($res) {
                     $removeFlag = true;
                     $textRequest = "success";
+
+                    $baseCalc = ($diffInventory + $quantity);
+                    // Save Inventory
+                    // General Iventory
+                    $iventoryGeneral = new InventoryGeneralModel();
+                    $iventoryGeneral->prodId = $prodId;                    
+                    $iventoryGeneral->total = $baseCalc;
+                    $res = $iventoryGeneral->updateProductGeneraInventory();
+                    //$iventoryGeneral->prodName = $_POST['nameProd'];
+                    //$res = $iventoryGeneral->addProductGeneraInventory();
+
                 }
 
             } else if($typeAction == "remove") {
@@ -463,12 +489,23 @@ class DashboardController extends ControllerBase {
                     $inventory->type = $typeAction;
                     $res = $inventory->generateMovement();
 
+
                     if ($res) {
                         $removeFlag = true;
                         $textRequest = "success";
+
+                        // Save Inventory
+                        $iventoryGeneral = new InventoryGeneralModel();
+                        $iventoryGeneral->prodId = $prodId;                    
+                        $iventoryGeneral->total = $baseCalc;
+                        $res = $iventoryGeneral->updateProductGeneraInventory();
                     }
                 }
             }
+
+            // Update Inventory
+
+
         }
 
         echo json_encode(array(
@@ -513,6 +550,93 @@ class DashboardController extends ControllerBase {
 
         $this->view->listProd = $res;
         $this->view->renderView($this, "searchProduct", "Search Product | Dashboard - Category");
+    }
+
+    // Reports
+    public function reports($params=null) {
+
+        $this->view->title = "Reports";
+        $this->view->renderView($this, "reports", "Reports | Inventory - product");
+    }
+
+    public function generateReportRequest($params=null) {
+
+        $iventoryGeneral = new InventoryGeneralModel();
+        $res = $iventoryGeneral->reportProductsCurrencyInventory();
+
+        $tableHTML = "
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th colspan='5'>Products Inventary</th>
+                </tr>
+
+                <tr>
+                    <th scope='col'>Name</th>
+                    <th scope='col'>Last date Edit</th>
+                    <th scope='col'>Image</th>
+                    <th scope='col'>Price</th>
+                    <th scope='col'>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+        ";
+
+        $tableHTMLPDF = "
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th colspan='5'>Products Inventary</th>
+                </tr>
+
+                <tr>
+                    <th scope='col'>Name</th>
+                    <th scope='col'>Last date Edit</th>
+                    <th scope='col'>Price</th>
+                    <th scope='col'>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+        ";
+
+        if(!empty($res)) {
+            foreach ($res as $prod) {
+                // <img class='rounded' src='". ASSET_URL."uploads/images/" . $prod->prod_imagen ."'></img>
+                $tableHTML.= "<tr>";                    
+                $tableHTML.= "  <td>". $prod->inve_prod_name ."</td>";
+                $tableHTML.= "  <td>". $prod->inve_date .     "</td>";
+                $tableHTML.= "  <td> <span class='avatar-product'> <img class='rounded' src='". ASSET_URL."uploads/images/" . $prod->prod_imagen ."'></img> </span></td>";
+                $tableHTML.= "  <td>". $prod->price .         "</td>";
+                $tableHTML.= "  <td>". $prod->inve_total .    "</td>";
+                $tableHTML.= "</tr>";
+
+                $tableHTMLPDF.= "<tr>";                    
+                $tableHTMLPDF.= "  <td>". $prod->inve_prod_name ."</td>";
+                $tableHTMLPDF.= "  <td>". $prod->inve_date .     "</td>";
+                $tableHTMLPDF.= "  <td>". $prod->price .         "</td>";
+                $tableHTMLPDF.= "  <td>". $prod->inve_total .    "</td>";
+                $tableHTMLPDF.= "</tr>";
+            }
+            $tableHTML.= "
+                </tbody>
+            </table>     
+            ";
+
+            $tableHTMLPDF.= "
+                </tbody>
+            </table>     
+            ";
+        }
+
+        echo json_encode(array("res"=>"success", "htmlRender" => $tableHTML, "pdfRender" => $tableHTMLPDF));
+    }
+
+    public function pdf($params=null) {
+        $htmlRender = $_POST['html'];
+        $html2pdf = new Html2Pdf();
+        $html2pdf->writeHTML($htmlRender);
+        $html2pdf->Output('inventory_producrs.pdf');
+        $this->view->renderView($this, "toPdf", "Home | Product");
     }
 
 }

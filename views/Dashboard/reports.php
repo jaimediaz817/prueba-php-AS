@@ -44,10 +44,10 @@
                             <a href="<?php echo SINGLE_URL; ?>Dashboard/searchProduct">Inventory</a>
                         </li>
                         <li>
-                            <a href="showProducts" class="active">Show Products</a>
+                            <a href="showProducts" class="">Show Products</a>
                         </li>
                         <li>
-                            <a href="<?php echo SINGLE_URL; ?>Dashboard/reports">Reports</a>
+                            <a href="<?php echo SINGLE_URL; ?>Dashboard/reports" class="active">Reports</a>
                         </li>
                         <li>
                             <a href="<?php echo SINGLE_URL; ?>Login/signOut">Exit</a>
@@ -62,52 +62,27 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <h1>ATLANTIC SOFT - TEST</h1>
-                                <p>All Products</p>
+                                <p>Report Products - inventory</p>
                                 <div class="container mx-0 px-0">
                                     <div class="row">
 
                                         <div class="col-12 pl-0">
-                                            <?php if(empty($this->products)) :?>
-                                                <div>Void Result</div>
-                                            <?php else: ?>
-                                                <table class="table table-dark t-products">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">Name</th>
-                                                            <th scope="col">Category</th>
-                                                            <th scope="col">Photo</th>
-                                                            <th scope="col">Price</th>
-                                                            <th scope="col" class="text-center">Quantity General</th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach($this->products as $prod) :?>
-                                                            <?php if($prod->prod_status!=0) :?>
-                                                                <tr>
-                                                                    <td><small><?= $prod->prod_nombre; ?></small></td>
-                                                                    <td><small><?= $prod->cate_nombre; ?></small></td>
-                                                                    <td>
-                                                                        <span class="avatar-product">
-                                                                            <img class="rounded" src="<?= ASSET_URL."uploads/images/".$prod->prod_imagen; ?>" alt="" srcset="">
-                                                                        </span>                                                                    
-                                                                    </td>
-                                                                    <td><small><span class="badge badge-success"><?= $prod->prod_precio; ?> <strong> $</strong></span></small></td>
-                                                                    <td class="text-center">
-                                                                        <span class="badge badge-primary"><?= $this->arrTmp[$prod->prod_id_pk] ?></span>
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="hidden" id="idProd" value="<?= $prod->prod_id_pk; ?>">
-                                                                        <input type="hidden" id="nameProd" value="<?= $prod->prod_nombre; ?>">
-                                                                        <input type="hidden" id="cateProd" value="<?= $prod->cate_id_fk; ?>">
-                                                                        <input type="hidden" id="priceProd" value="<?= $prod->prod_precio; ?>">
-                                                                    </td>
-                                                                </tr>
-                                                            <?php endif;?>
-                                                        <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
-                                            <?php endif; ?>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <form action="">
+                                                        <span> Click a Link for generate Report Inventory - All products</span>
+                                                        <a href="javascript:;" class="btn btn-primary" id="generateReport">Generate Report</a>
+                                                    </form>                                                    
+                                                </div>
+
+                                                <div id="tableRender">
+                                                </div>
+
+                                                <form action="<?php echo SINGLE_URL; ?>Dashboard/pdf" method="post">
+                                                    <input type="hidden" name="html" value="" id="htmlId">
+                                                    <button type="submit">PDF</button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

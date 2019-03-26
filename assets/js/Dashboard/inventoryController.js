@@ -25,8 +25,8 @@
             alert("you must enter an amount to add or remove from inventory");
             $("#quantity").focus();
         } else {
-            if($("#quantity").val() < 0 ) {
-                alert("the amount can not be negative. Please enter a positive valid number");
+            if($("#quantity").val() <= 0 ) {
+                alert("the amount can not be negative or cero value. Please enter a positive valid number");
                 $("#quantity").val(0);
                 $("#quantity").focus();
             } else {
@@ -43,6 +43,7 @@
                     dataType: 'json',
                     contentType: false,
                     processData: false,
+
                     success: function(response){
                         console.log("response: ", response);
 

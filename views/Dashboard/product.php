@@ -47,7 +47,7 @@
                             <a href="showProducts">Show Products</a>
                         </li>
                         <li>
-                            <a href="reports">Reports</a>
+                            <a href="<?php echo SINGLE_URL; ?>Dashboard/reports">Reports</a>
                         </li>
                         <li>
                             <a href="<?php echo SINGLE_URL; ?>Login/signOut">Exit</a>
@@ -192,6 +192,9 @@
                 
 
         <!-- Scripts -->
+        <!-- AXIOS -->
+        <!-- <script src="<?php echo ASSET_URL ?>js/libraries/axios/axios.js"></script> -->
+        <!-- JQUERY -->
         <script src="<?php echo ASSET_URL ?>js/libraries/jquery-plugins/jquery-3.2.1.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
         crossorigin="anonymous"></script>

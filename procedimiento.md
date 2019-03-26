@@ -42,3 +42,7 @@
 
  
 
+# HTML2PDF
+- instalar paquete:
+php composer.phar require spipu/html2pdf
+php composer.phar update
