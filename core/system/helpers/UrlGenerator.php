@@ -34,7 +34,7 @@ class UrlGenerator {
 		$hostVar = $datos['host'];
 		$path = explode("/", $datos['path']);
 		//validacion para el tipo de ambiente:
-		if ($hostVar == 'localhost'){
+		if ($hostVar == 'localhost' || $hostVar == "192.168.10.1" || $hostVar = "192.168.56.102"){
 			//cambiar la visibilidad del proyecto
 			$explodePath = $path[1]. "/";
 		}else {

@@ -109,6 +109,7 @@ $index->initApacheConfig();
 
 // Constants
 $index->initConstantsURL();
+
 // Enviroment
 $index->initEnviromentData();
 
@@ -117,6 +118,7 @@ $index->validarAmbienteApp();
 
 // Functions
 $index->loadFunctions();
+
 // Routes
 $index->initFrontControllerRouter();
 //************************************************** */

@@ -41,7 +41,7 @@ class UserModel extends CrudBase {
     }
 
     public function selectUserLogin($user='', $pass='') {
-        $response;
+        $response = null;
 
         if ($user!= '' && $pass!='') {
             $query = "
@@ -57,7 +57,7 @@ class UserModel extends CrudBase {
     }
 
     public function activeAccount($user='', $pass='') {
-        $response;
+        $response = null;
 
         if ($user!= '' && $pass!='') {
             $query = "

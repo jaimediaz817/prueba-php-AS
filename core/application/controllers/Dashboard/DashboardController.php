@@ -38,7 +38,7 @@ class DashboardController extends ControllerBase {
 
     // actions CRUD - Category
     public function saveCategory($params=null) {
-        $response;
+        $response = null;
         if ($_POST) {
             $categoryName = $_POST["categoryname"];
 
@@ -56,7 +56,7 @@ class DashboardController extends ControllerBase {
 
     // actions CRUD - Category
     public function editCategory($params=null) {
-        $response;
+        $response = null;
         if ($_POST) {
             $categoryId = $_POST["id"];
             $categoryName = $_POST["categoryname"];
@@ -76,7 +76,7 @@ class DashboardController extends ControllerBase {
     }
 
     public function deleteCategory($params=null) {
-        $response;
+        $response = null;
         if ($_POST) {
             $categoryId = $_POST["id"];
             $category = new CategoryModel();
